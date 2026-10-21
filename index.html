@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fumiqasiya aktı V2 – sahibkar ekranları üçün təkliflər</title>
+<style>
+:root{
+  --bg:#f4f5f7; --card:#fff; --line:#eceef1; --head:#f7f8fa; --text:#1b1f24; --muted:#6b717c;
+  --primary:#3b7cf6; --dark:#2f343b;
+  --new-bg:#dff7fb; --new-tx:#1f7f93;
+  --prog-bg:#eceefe; --prog-tx:#3240c9;
+  --chg-bg:#fff4dc; --chg-tx:#b8620b;
+  --done-bg:#e5f6ec; --done-tx:#1e8a4c;
+  --rej-bg:#fdeaea; --rej-tx:#c62828;
+  --note:#7c3aed;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font-family:Inter,"Segoe UI",Roboto,Arial,sans-serif;color:var(--text);font-size:14px}
+.wrap{max-width:1440px;margin:0 auto;padding:28px 24px 60px}
+h1{font-size:24px;margin:0 0 4px}
+.lead{color:var(--muted);margin:0 0 20px;max-width:900px;line-height:1.5}
+.nav{display:flex;gap:8px;margin:0 0 22px;flex-wrap:wrap}
+.nav a{padding:8px 14px;border-radius:8px;background:#fff;border:1px solid var(--line);color:var(--text);text-decoration:none;font-weight:500}
+.nav a:hover{border-color:var(--primary);color:var(--primary)}
+section.block{margin-bottom:44px}
+.block-title{display:flex;align-items:baseline;gap:12px;margin:0 0 12px}
+.block-title h2{font-size:19px;margin:0}
+.block-title span{color:var(--muted)}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:20px;align-items:start}
+@media(max-width:1200px){.grid{grid-template-columns:1fr}}
+
+/* notes */
+.notes{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px;position:sticky;top:16px}
+.notes h3{margin:0 0 10px;font-size:15px}
+.note{display:flex;gap:10px;margin:0 0 12px;line-height:1.45;font-size:13px}
+.note b{display:block;margin-bottom:2px}
+.num{flex:0 0 22px;height:22px;border-radius:50%;background:var(--note);color:#fff;font-size:12px;font-weight:700;display:inline-flex;align-items:center;justify-content:center}
+.pin{display:inline-flex;width:20px;height:20px;border-radius:50%;background:var(--note);color:#fff;font-size:11px;font-weight:700;align-items:center;justify-content:center;vertical-align:middle;margin-left:6px;box-shadow:0 0 0 3px rgba(124,58,237,.18)}
+.tagnew{display:inline-block;font-size:10.5px;font-weight:700;color:var(--note);background:#f1eafe;border-radius:4px;padding:1px 6px;margin-left:6px;vertical-align:middle}
+
+/* mock card */
+.mock{background:var(--card);border-radius:16px;border:1px solid var(--line);padding:22px 24px;overflow:hidden}
+.mock-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.mock-top h3{font-size:22px;margin:0}
+.btn{border:0;border-radius:10px;padding:10px 18px;font:inherit;font-weight:500;cursor:pointer}
+.btn.primary{background:var(--primary);color:#fff}
+.btn.ghost{background:#fff;border:1px solid #d6d9de;color:var(--text)}
+.btn.sm{padding:6px 12px;font-size:13px;border-radius:8px}
+.sub{font-size:18px;font-weight:700;margin:14px 0 12px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.toolbar{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.tabs{display:flex;background:var(--head);border:1px solid var(--line);border-radius:10px;padding:3px;flex-wrap:wrap}
+.tabs span[data-f]{display:inline-flex;align-items:center;height:34px;padding:0 12px;border-radius:8px;color:#3a3f46;cursor:pointer;white-space:nowrap}
+.tabs span[data-f]:hover{background:#e9ecf0}
+.tabs span[data-f].on{background:var(--dark);color:#fff}
+.tabs{align-items:center}
+
+.cnt{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 5px;margin-left:6px;border-radius:9px;background:var(--chg-tx);color:#fff;font-size:11px;font-weight:700;line-height:1}
+.search{border:1px solid #d6d9de;border-radius:10px;padding:8px 14px;color:#9aa0a8;min-width:240px}
+
+table{width:100%;border-collapse:collapse}
+th{background:var(--head);color:#4a4f57;font-weight:600;font-size:12.5px;padding:12px 10px;text-align:center;white-space:nowrap}
+td{padding:14px 10px;text-align:center;border-bottom:1px solid var(--line);font-size:13.5px}
+td.l,th.l{text-align:left}
+.badge{display:inline-block;padding:4px 12px;border-radius:999px;font-size:12.5px;font-weight:500;white-space:nowrap}
+.b-new{background:var(--new-bg);color:var(--new-tx)}
+.b-prog{background:var(--prog-bg);color:var(--prog-tx)}
+.b-chg{background:var(--chg-bg);color:var(--chg-tx)}
+.b-done{background:var(--done-bg);color:var(--done-tx)}
+.b-rej{background:var(--rej-bg);color:var(--rej-tx)}
+.icon-btn{width:34px;height:34px;border-radius:10px;border:0;background:#eef3fd;color:#6a8fd8;display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+.icon-btn.plain{background:transparent;color:#444}
+.kebab{color:#555;font-size:18px;cursor:pointer;padding:0 6px}
+
+/* list: materials column */
+.mat-cell{display:flex;flex-direction:column;align-items:center;gap:5px;position:relative}
+.mat-count{font-weight:600}
+.bar{display:flex;gap:2px;width:96px;height:7px}
+.bar i{flex:1;border-radius:2px}
+.s-new{background:#7fd6e6}.s-prog{background:#8b95f0}.s-chg{background:#f0a43a}.s-done{background:#43b373}.s-rej{background:#e25b5b}
+.mat-cell .tip{display:none;position:absolute;top:100%;margin-top:6px;z-index:5;background:#1f2329;color:#fff;border-radius:8px;padding:8px 10px;font-size:12px;text-align:left;white-space:nowrap;box-shadow:0 8px 20px rgba(0,0,0,.18)}
+.mat-cell:hover .tip{display:block}
+.tip div{display:flex;align-items:center;gap:6px;margin:2px 0}
+.tip i{width:8px;height:8px;border-radius:2px;display:inline-block}
+tr.need td{background:#fffaf0}
+tr.need td:first-child{box-shadow:inset 3px 0 0 var(--chg-tx)}
+.need-hint{display:block;font-size:11.5px;color:var(--chg-tx);margin-top:4px}
+.chev{border:0;background:transparent;cursor:pointer;font-size:14px;color:#555;width:24px;transition:transform .15s}
+.chev.open{transform:rotate(90deg)}
+tr.subrow td{background:#fafbfc;padding:0 10px 12px 46px;text-align:left}
+.subtable{width:100%;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fff}
+.subtable th{background:#f3f5f8;font-size:11.5px;padding:8px}
+.subtable td{padding:8px;font-size:12.5px}
+.trunc{max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:inline-block;vertical-align:middle}
+.reason-mini{color:var(--muted);font-size:12px}
+
+/* PDF menu */
+.pdfwrap{position:relative;display:inline-block}
+.pdfmenu{display:none;position:absolute;right:0;top:40px;z-index:6;background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:0 10px 24px rgba(0,0,0,.12);padding:6px;min-width:250px;text-align:left}
+.pdfwrap:hover .pdfmenu{display:block}
+.pdfmenu div{padding:8px 10px;border-radius:6px;font-size:12.5px;display:flex;justify-content:space-between;gap:10px}
+.pdfmenu div:hover{background:#f3f6fd}
+.pdfmenu .grp{font-size:11px;color:var(--muted);padding:6px 10px 2px}
+
+/* detail */
+.meta{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:12px 0 16px;border-bottom:1px solid var(--line)}
+.meta label{display:block;color:var(--muted);font-size:12.5px;margin-bottom:6px}
+.summary{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.summary .badge{font-size:11.5px;padding:3px 9px}
+.banner{display:flex;gap:12px;align-items:flex-start;border-radius:12px;padding:12px 14px;margin:14px 0 4px;border:1px solid}
+.banner.chg{background:#fff8ea;border-color:#f6d9a0}
+.banner.rej{background:#fdf0f0;border-color:#f4c7c7}
+.banner .ico{font-size:18px;line-height:1}
+.banner b{display:block;margin-bottom:4px}
+.banner ul{margin:4px 0 0;padding-left:18px}
+.banner a{color:var(--primary);cursor:pointer;text-decoration:none;font-weight:500}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px;margin:14px 0}
+.f label{display:block;font-size:12.5px;font-weight:500;margin-bottom:5px}
+.f div{background:#f6f7f9;border:1px solid #e3e6ea;border-radius:10px;padding:10px 14px;color:#6b717c}
+.collapse-note{font-size:12.5px;color:var(--muted);margin:-4px 0 10px}
+.mat-box{background:#f9fafb;border:1px solid var(--line);border-radius:14px;padding:14px}
+.mat-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:10px;flex-wrap:wrap}
+.mat-head b{font-size:15px}
+.mtable{background:#fff;border-radius:10px;overflow:hidden}
+.mtable td{font-size:13px;padding:12px 8px}
+.mtable th{font-size:11.5px;padding:10px 8px;white-space:normal}
+tr.r-chg td{background:#fffaf0}
+tr.r-chg td:first-child{box-shadow:inset 3px 0 0 var(--chg-tx)}
+tr.r-rej td{color:#8a8f97}
+tr.r-rej td .badge{color:var(--rej-tx)}
+tr.detail td{background:#fcfcfd;text-align:left;padding:4px 14px 14px 46px}
+.reason{border-radius:10px;padding:10px 12px;border:1px solid;font-size:13px;line-height:1.45;margin-top:6px}
+.reason.chg{background:#fff8ea;border-color:#f6d9a0}
+.reason.rej{background:#fdf0f0;border-color:#f4c7c7}
+.reason .rh{display:flex;justify-content:space-between;gap:10px;font-weight:600;margin-bottom:3px}
+.reason .rh span{font-weight:400;color:var(--muted);font-size:12px}
+.acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.act{display:inline-flex;align-items:center;gap:8px;border:1px solid #d9e3fb;background:#f3f7ff;border-radius:8px;padding:6px 10px;font-size:12.5px;color:#2c5bd6}
+.tfoot td{background:#e8effc;font-weight:700}
+.docs{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+.doc{display:inline-flex;align-items:center;gap:10px;background:#f1f5fe;border:1px solid #dbe5fb;border-radius:12px;padding:14px 18px;font-weight:500}
+.hist{margin-top:18px;border-top:1px solid var(--line);padding-top:14px}
+.hist h4{margin:0 0 10px;font-size:15px}
+.tl{border-left:2px solid var(--line);margin-left:6px;padding-left:16px}
+.tl div{position:relative;margin:0 0 10px;font-size:13px;line-height:1.45}
+.tl div::before{content:"";position:absolute;left:-22px;top:5px;width:10px;height:10px;border-radius:50%;background:#c9ced6}
+.tl .t{color:var(--muted);font-size:12px}
+.dash{color:#c0392b;font-weight:600}
+
+/* modal */
+.overlay{position:fixed;inset:0;background:rgba(20,24,30,.45);display:none;align-items:center;justify-content:center;z-index:50;padding:20px}
+.overlay.show{display:flex}
+.modal{background:#fff;border-radius:16px;width:760px;max-width:100%;max-height:92vh;overflow:auto;padding:20px 22px}
+.modal h3{margin:0 0 4px}
+.mgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px 12px;margin:12px 0}
+.mgrid .f div{background:#fff;color:var(--text)}
+.mgrid .f div.ro{background:#f6f7f9;color:#6b717c}
+.mfoot{display:flex;justify-content:flex-end;gap:8px;margin-top:10px}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1f2329;color:#fff;padding:10px 16px;border-radius:10px;display:none;z-index:60}
+
+.other{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px;line-height:1.5;font-size:13.5px}
+.card h4{margin:0 0 6px;font-size:14.5px}
+.card .k{font-size:11px;font-weight:700;color:var(--note);letter-spacing:.04em;text-transform:uppercase}
+.q li{margin:0 0 8px;line-height:1.5}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);margin:8px 0 0}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:10px;height:10px;border-radius:2px;display:inline-block}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>Fumiqasiya aktı V2 – sahibkar ekranları üçün təkliflər</h1>
+<p class="lead">Mövcud ekranlar əsasında hazırlanıb. Bənövşəyi nömrələr <span class="pin" style="margin:0">1</span> sağdakı izahlara uyğundur. <span class="tagnew" style="margin:0">YENİ</span> işarəsi mövcud ekrana əlavə olunan elementləri göstərir. Mockup interaktivdir: sətirləri açmaq, düzəliş pəncərəsini açmaq və göndərmək mümkündür.</p>
+
+<div class="nav">
+  <a href="#list">1. Müraciətlər siyahısı</a>
+  <a href="#detail">2. Ətraflı baxış</a>
+  <a href="#edit">3. Material üzrə düzəliş</a>
+  <a href="#other">4. Digər məqamlar</a>
+  <a href="#questions">5. Açıq suallar</a>
+</div>
+
+<!-- ============ 1. LIST ============ -->
+<section class="block" id="list">
+  <div class="block-title"><h2>1. Müraciətlər siyahısı</h2><span>Bütün müraciətlərim</span></div>
+  <div class="grid">
+    <div class="mock">
+      <div class="mock-top"><h3>Fumiqasiya aktı</h3><button class="btn primary">Yeni Sənəd</button></div>
+      <div class="sub">Bütün müraciətlərim</div>
+      <div class="toolbar">
+        <div style="display:flex;align-items:center;gap:8px">
+        <div class="tabs" id="tabs">
+          <span class="on" data-f="all">Bütün müraciətlər</span><span data-f="new">Yeni</span><span data-f="prog">İcradadır</span><span data-f="wait">Gözləmədə</span>
+          <span data-f="chg">Dəyişiklik gözlənilir<span class="cnt" id="chgCnt">2</span></span><span data-f="rej">İmtina edildi</span><span data-f="done">İcra tamamlandı</span>
+        </div><span class="pin" style="margin:0">5</span>
+        </div>
+        <div class="search">🔍 Axtarış edin</div>
+      </div>
+      <table>
+        <thead><tr>
+          <th style="width:30px"></th>
+          <th>Müraciət nömrəsi</th><th>Müraciət tarixi</th><th>Sənədin növü</th><th>İcraçı qurum</th>
+          <th>Materiallar <span class="tagnew">YENİ</span><span class="pin">1</span></th>
+          <th>Status</th><th></th><th></th>
+        </tr></thead>
+        <tbody id="listBody"></tbody>
+      </table>
+      <div class="legend">
+        <span><i class="s-new"></i>Yeni</span><span><i class="s-prog"></i>İcradadır</span><span><i class="s-chg"></i>Dəyişiklik gözlənilir</span>
+        <span><i class="s-done"></i>İcra tamamlandı</span><span><i class="s-rej"></i>İmtina edildi</span>
+      </div>
+    </div>
+
+    <div class="notes">
+      <h3>Siyahı üçün təkliflər</h3>
+      <div class="note"><span class="num">1</span><div><b>"Materiallar" sütunu</b>Material sayı və altında kiçik status zolağı göstərilir. Zolağın hər seqmenti bir materialdır, rəngi onun statusudur. 10 material olsa da sətir hündürlüyü dəyişmir. Üzərinə gəldikdə statuslar üzrə say göstərilir.</div></div>
+      <div class="note"><span class="num">2</span><div><b>Sətri açmaq (▸)</b>Siyahıda hər material üzrə status badge-lərini yan-yana göstərmək 10 materialda oxunmaz. Bunun əvəzinə sətir açılır və materialların kiçik cədvəli görünür: ad, status, qısa səbəb, akt. Sətir yalnız 1-dən çox material olduqda açılır.</div></div>
+      <div class="note"><span class="num">3</span><div><b>Hərəkət tələb edən sətir</b>Ümumi status "Dəyişiklik gözlənilir" olan sətir sarı fonla və sol xəttlə fərqlənir. Altında "2 material düzəliş gözləyir" yazılır.</div></div>
+      <div class="note"><span class="num">4</span><div><b>PDF ikonu → sənəd menyusu</b>V2-də akt hər material üzrə ayrıcadır. Ona görə ikon bir fayl açmır, menyu göstərir: müraciət ərizəsi və hazır olan material aktları.</div></div>
+      <div class="note"><span class="num">5</span><div><b>Tab üzərində say</b>"Dəyişiklik gözlənilir" tabında hərəkət gözləyən müraciətlərin sayı göstərilir. Taba klik etdikdə siyahıda yalnız həmin statuslu müraciətlər qalır (digər tablar da nümunədə işləyir).</div></div>
+      <div class="note"><span class="num">6</span><div><b>⋮ menyusu</b>"Ətraflı baxış" və (lazım olduqda) "Düzəliş et" əməliyyatları.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 2. DETAIL ============ -->
+<section class="block" id="detail">
+  <div class="block-title"><h2>2. Ətraflı baxış</h2><span>Müraciət 11121260000236 – 4 material, müxtəlif statuslarla</span></div>
+  <div class="grid">
+    <div class="mock">
+      <div class="mock-top"><h3 style="font-size:20px">Ətraflı baxış</h3>
+        <div style="display:flex;gap:8px"><button class="icon-btn plain" title="Ümumi düzəliş – yalnız ümumi müraciət qaytarıldıqda aktiv">✎</button><button class="icon-btn plain" title="Sil – yalnız Yeni statusunda">🗑</button><span class="pin" style="align-self:center">7</span></div>
+      </div>
+      <div class="meta">
+        <div><label>Müraciət nömrəsi</label>11121260000236</div>
+        <div><label>Müraciət tarixi</label>16.10.2026</div>
+        <div><label>İcraçı qurum</label>Kənd Təsərrüfatı Nazirliyi</div>
+        <div><label>Müraciətin statusu</label><span class="badge b-chg" id="appStatus">Dəyişiklik gözlənilir</span>
+          <div class="summary" id="summary"></div><span class="tagnew" style="margin:4px 0 0">YENİ</span><span class="pin">1</span></div>
+      </div>
+
+      <div class="banner chg" id="chgBanner">
+        <span class="ico">⚠️</span>
+        <div><b>Düzəliş tələb olunur <span class="pin">2</span></b>
+          Qurum aşağıdakı material(lar) üzrə düzəliş tələb edib. Düzəliş etmək üçün materialın sətrindəki ✎ düyməsinə klik edin.
+          <ul id="chgList"></ul>
+        </div>
+      </div>
+
+      <div class="fields">
+        <div class="f"><label>İxracatçının VÖEN-i</label><div>2004818351</div></div>
+        <div class="f"><label>İxracatçının adı</label><div>"STAY.AZ" Məhdud Məsuliyyətli Cəmiyyəti</div></div>
+      </div>
+      <div class="collapse-note">… müraciət edən haqqında digər sahələr dəyişmir <span class="pin">8</span></div>
+
+      <div class="mat-box">
+        <div class="mat-head"><b>Materiallar</b><span style="color:var(--muted);font-size:12.5px">Sətrə klik edərək səbəbi və aktı görün</span></div>
+        <div class="mtable">
+          <table>
+            <thead><tr>
+              <th style="width:30px"></th>
+              <th class="l">Materialın təsnifatı</th><th>Materialın adı</th><th>Ölçü vahidi</th><th>Miqdarı</th><th>Xidmət haqqı (AZN)</th>
+              <th>Qablaşdırma növü</th><th>Materialın mənbəyi</th>
+              <th>Status <span class="tagnew">YENİ</span><span class="pin">3</span></th>
+              <th>Akt <span class="tagnew">YENİ</span><span class="pin">5</span></th>
+              <th></th>
+            </tr></thead>
+            <tbody id="matBody"></tbody>
+            <tfoot><tr class="tfoot"><td colspan="11">Cəmi: <span id="total"></span></td></tr></tfoot>
+          </table>
+        </div>
+      </div>
+
+      <div class="docs"><div class="doc">📄 Elektron müraciət ərizəsi</div></div>
+
+      <div class="hist">
+        <h4>Müraciətin tarixçəsi <span class="tagnew">YENİ</span><span class="pin">6</span></h4>
+        <div class="tl" id="timeline"></div>
+      </div>
+    </div>
+
+    <div class="notes">
+      <h3>Ətraflı baxış üçün təkliflər</h3>
+      <div class="note"><span class="num">1</span><div><b>Status xülasəsi</b>Ümumi statusun altında materialların statuslar üzrə sayı: "1 tamamlandı · 1 imtina · 1 dəyişiklik · 1 icradadır".</div></div>
+      <div class="note"><span class="num">2</span><div><b>Düzəliş banneri</b>Ən azı bir material "Dəyişiklik gözlənilir" olduqda səhifənin yuxarısında görünür. Bannerdə həmin materialların siyahısı var, klik edəndə uyğun sətrə keçid edilir və sətir açılır. Bütün düzəlişlər göndəriləndən sonra banner itir.</div></div>
+      <div class="note"><span class="num">3</span><div><b>Material cədvəlinə "Status" sütunu</b>Hər materialın öz badge-i var.<br>
+        <b style="display:inline">Dəyişiklik gözlənilir</b>: sarı fon, sətir avtomatik açıq olur.<br>
+        <b style="display:inline">İmtina edildi</b>: sətir boz rəngdə qalır, amma oxunaqlı olur.</div></div>
+      <div class="note"><span class="num">4</span><div><b>Səbəblər sətrin içində</b>Sətir açıldıqda (▸) qurumun qeydi materialın altında görünür:<br>
+        <b style="display:inline">sarı blok</b>: "Düzəliş səbəbi", tarix ilə<br>
+        <b style="display:inline">qırmızı blok</b>: "İmtina səbəbi", tarix ilə<br>
+        Belə olanda bir müraciətdə həm imtina, həm düzəliş olsa da, hər səbəb öz materialının yanında qalır və qarışmır.</div></div>
+      <div class="note"><span class="num">5</span><div><b>"Akt" sütunu</b>Yalnız "İcra tamamlandı" olan materialda PDF ikonu aktiv olur. Bir neçə akt varsa, sətir açıldıqda hamısı görünür.</div></div>
+      <div class="note"><span class="num">6</span><div><b>Tarixçə</b>Bütün status dəyişiklikləri və səbəblər xronoloji ardıcıllıqla göstərilir. Sahibkar əvvəlki düzəliş tələblərini də görə bilir. İstəyə bağlıdır.</div></div>
+      <div class="note"><span class="num">7</span><div><b>Yuxarıdakı ✎ və 🗑 düymələri</b>✎ yalnız ümumi müraciət düzəlişə qaytarıldıqda aktiv olur. Material üzrə düzəliş sətrdəki ✎ ilə edilir. 🗑 yalnız "Yeni" statusunda aktiv qalır.</div></div>
+      <div class="note"><span class="num">8</span><div><b>Material üzrə düzəlişdə</b>Müraciət edən haqqında sahələr readonly qalır.</div></div>
+      <div class="note"><span class="num">!</span><div><b>Müşahidə: mövcud ekranda "Ölçü vahidi" "-" görünür</b>Material seçiləndə ölçü vahidi avtomatik dolur, ona görə detal səhifəsində də göstərilməlidir. Bu, ayrıca bug kimi yoxlanılmalıdır.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 3. EDIT ============ -->
+<section class="block" id="edit">
+  <div class="block-title"><h2>3. Material üzrə düzəliş</h2><span>Ətraflı baxışda sarı sətrdəki ✎ düyməsi</span></div>
+  <div class="grid">
+    <div class="mock">
+      <p style="margin:0 0 12px;line-height:1.5">Düzəliş pəncərəsi (modal) materialın sətrindən açılır. Yuxarıda qurumun səbəbi görünür qalır. Sahələr müraciət formasındakı material bölməsinin eyni məntiqi ilə işləyir: material adına görə təsnifat və ölçü vahidi dolur, xidmət haqqı hesablanır. "Göndər"dən sonra materialın statusu <span class="badge b-prog">İcradadır</span> olur.</p>
+      <button class="btn primary" onclick="openEdit(2)">Düzəliş pəncərəsini aç (nümunə)</button>
+    </div>
+    <div class="notes">
+      <h3>Qaydalar</h3>
+      <div class="note"><span class="num">1</span><div>Yalnız "Dəyişiklik gözlənilir" statusundakı materialda ✎ görünür. Digər sətirlərdə ✎ və 🗑 gizlədilir.</div></div>
+      <div class="note"><span class="num">2</span><div>Təsnifat və material adı da dəyişdirilə bilər. Material silmək və ya əlavə etmək olmaz.</div></div>
+      <div class="note"><span class="num">3</span><div>Bir neçə material düzəliş gözləyirsə, hər biri ayrıca göndərilir. Hər göndərişdən sonra banner yenilənir.</div></div>
+      <div class="note"><span class="num">4</span><div>"Göndər"dən əvvəl təsdiq soruşulur, sonra "Düzəliş göndərildi" mesajı göstərilir.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 4. OTHER ============ -->
+<section class="block" id="other">
+  <div class="block-title"><h2>4. Digər məqamlar</h2><span>Sizin qeyd etmədiyiniz, amma nəzərə alınmalı olanlar</span></div>
+  <div class="other">
+    <div class="card"><div class="k">Bildiriş</div><h4>Material statusu dəyişəndə xəbər vermək</h4>Material "Dəyişiklik gözlənilir", "İmtina edildi" və "İcra tamamlandı" olduqda sahibkara sistem daxili bildiriş (və mövcuddursa e-poçt) göndərilir. Mətn nümunəsi: "11121260000236 nömrəli müraciət üzrə 'mahlıc' materialına düzəliş tələb olunur."</div>
+    <div class="card"><div class="k">Filtr</div><h4>Tablar ümumi statusa görə qalır</h4>Filtr tabları ümumi müraciət statusu ilə işləməyə davam edir. Material statusuna görə ayrıca filtr lazım deyil. "Gözləmədə" tabının V2-də hansı statusa uyğun gəldiyi dəqiqləşdirilməlidir.</div>
+    <div class="card"><div class="k">Uzun mətnlər</div><h4>Təsnifat adları uzundur</h4>Cədvəldə təsnifat qısaldılır (…), üzərinə gələndə tam ad göstərilir (tooltip). Səbəb mətni 3 sətirdən uzundursa, "Daha çox" ilə tam açılır.</div>
+    <div class="card"><div class="k">Final vəziyyət</div><h4>Bütün materiallar bağlandıqda</h4>Səhifədə heç bir əməliyyat düyməsi qalmır. Yalnız baxış, akt yükləmə və tarixçə əlçatan olur. Ümumi status "İcra tamamlandı" olur, imtina edilənlər də daxil.</div>
+    <div class="card"><div class="k">Toqquşma</div><h4>Düzəliş zamanı status dəyişərsə</h4>Sahibkar redaktə edərkən qurum həmin materialı imtina edərsə, göndərmə zamanı "Materialın statusu dəyişib" mesajı göstərilir və səhifə yenilənir.</div>
+    <div class="card"><div class="k">V1 müraciətləri</div><h4>Köhnə müraciətlər</h4>V1 müraciətlərində materiallar ümumi statusla göstərilir. Akt "Sənədlər" hissəsində qalır, "Akt" sütunu boş olur.</div>
+    <div class="card"><div class="k">Mobil / dar ekran</div><h4>Cədvəl genişliyi</h4>Material cədvəlində sütun çoxdur. Dar ekranda "Status", "Akt" və əməliyyat sütunları sağda sabit (sticky) qalmalıdır ki, üfüqi scroll zamanı itməsin.</div>
+  </div>
+</section>
+
+<!-- ============ 5. QUESTIONS ============ -->
+<section class="block" id="questions">
+  <div class="block-title"><h2>5. Açıq suallar</h2></div>
+  <div class="card"><ol class="q" style="margin:0;padding-left:18px">
+    <li>Siyahıda material statusları üçün <b>zolaq + açılan sətir</b> yanaşması uyğundurmu? Alternativ: yalnız tooltip (açılan sətir olmadan).</li>
+    <li>PDF ikonu V1-də nəyi açır: ərizəni, yoxsa aktı? V2-də menyu (ərizə + material aktları) təklifi qəbul edilirmi?</li>
+    <li>"Gözləmədə" tabı hansı statusa uyğundur? V2-də saxlanılırmı?</li>
+    <li>Tarixçə bloku bu mərhələdə lazımdırmı, yoxsa sonraya saxlanılsın?</li>
+    <li>Düzəliş pəncərəsi modal kimi olsun, yoxsa sətrin içində (inline) redaktə?</li>
+  </ol></div>
+</section>
+
+</div>
+
+<!-- modal -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <h3>Materiala düzəliş</h3>
+    <div style="color:var(--muted);font-size:13px">Müraciət 11121260000236 · <span id="mName"></span></div>
+    <div class="reason chg" style="margin-top:12px"><div class="rh">Düzəliş səbəbi <span id="mDate"></span></div><div id="mReason"></div></div>
+    <div class="mgrid">
+      <div class="f"><label>Materialın təsnifatı *</label><div id="mCls"></div></div>
+      <div class="f"><label>Materialın adı *</label><div id="mMat"></div></div>
+      <div class="f"><label>Ölçü vahidi</label><div class="ro" id="mUnit"></div></div>
+      <div class="f"><label>Miqdar *</label><div id="mQty" contenteditable="true" style="outline:none"></div></div>
+      <div class="f"><label>Xidmət haqqı (AZN)</label><div class="ro" id="mFee"></div></div>
+      <div class="f"><label>Qablaşdırma növü</label><div id="mPack"></div></div>
+      <div class="f"><label>Qablaşdırma sayı</label><div>12</div></div>
+      <div class="f"><label>Materialın mənbəyi *</label><div id="mSrc"></div></div>
+      <div class="f"><label>Fumiqasiya tədbiri aparılan yer *</label><div>Məzahir Rüstəmov 45</div></div>
+    </div>
+    <div style="font-size:12.5px;color:var(--muted)">Nümunə: "Miqdar" xanasını dəyişə bilərsiniz, xidmət haqqı yenidən hesablanır.</div>
+    <div class="mfoot"><button class="btn ghost" onclick="closeEdit()">Ləğv et</button><button class="btn primary" onclick="submitEdit()">Göndər</button></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const ST = {
+  new:{t:'Yeni',b:'b-new',s:'s-new'}, prog:{t:'İcradadır',b:'b-prog',s:'s-prog'},
+  chg:{t:'Dəyişiklik gözlənilir',b:'b-chg',s:'s-chg'}, done:{t:'İcra tamamlandı',b:'b-done',s:'s-done'},
+  rej:{t:'İmtina edildi',b:'b-rej',s:'s-rej'}
+};
+const badge = k => `<span class="badge ${ST[k].b}">${ST[k].t}</span>`;
+const RATE = {"dənli və paxlalı bitkilərin məhsul-ları, yemlər":0.9,"texniki yüklər və digər materiallar (tütün, pambıq, biyan və digər karantin nəzarətində olan materiallar)":0.9,"Taxta altlıqların və qutuların zərərsizləşdirilməsi və markalanması (m3)":7,"qurudulmuş meyvələr (qoz, fındıq, badam, püstə, ərik, əncir, xurma və s.)":0.9};
+
+/* ---------- list data ---------- */
+const mk = (n,arr) => arr.map((s,i)=>({name:n[i%n.length],s}));
+const names = ['buğda','arpa','mahlıc','lint','çiyid','taxta palet','fındıq ləpəsi','qarğıdalı','tiftik','badam ləpəsi'];
+const LIST = [
+  {no:'11121260000308',d:'21.10.2026 10:16',st:'new',mats:mk(names,['new','new'])},
+  {no:'11121260000236',d:'16.10.2026 09:47',st:'chg',mats:[{name:'buğda',s:'done'},{name:'arpa',s:'rej',r:'Mənşə sertifikatı təqdim edilməyib'},{name:'mahlıc',s:'chg',r:'Miqdar faktura ilə uyğun deyil'},{name:'taxta palet',s:'prog'}]},
+  {no:'11121260000307',d:'20.10.2026 18:54',st:'chg',mats:mk(names,['done','done','chg','prog','prog','done','new','prog','rej','prog'])},
+  {no:'11121260000286',d:'19.10.2026 15:47',st:'done',mats:mk(names,['done','done','rej'])},
+  {no:'11121260000285',d:'19.10.2026 15:37',st:'prog',mats:mk(names,['prog'])},
+  {no:'11121260000249',d:'19.10.2026 10:47',st:'rej',mats:mk(names,['rej','rej'])}
+];
+LIST[2].mats[2].r='Qablaşdırma növü səhv göstərilib'; LIST[2].mats[8].r='Material karantin nəzarətinə aid deyil';
+
+let FILTER='all';
+function renderList(){
+  const tb = document.getElementById('listBody'); let h='';
+  const rows = LIST.map((a,i)=>[a,i]).filter(([a])=>FILTER==='all'||a.st===FILTER);
+  if(!rows.length){tb.innerHTML='<tr><td colspan="9" style="padding:28px;color:#8a9099">Bu statusda müraciət yoxdur</td></tr>';return;}
+  rows.forEach(([a,i])=>{
+    const counts={}; a.mats.forEach(m=>counts[m.s]=(counts[m.s]||0)+1);
+    const chgN = counts.chg||0;
+    const tip = Object.keys(ST).filter(k=>counts[k]).map(k=>`<div><i class="${ST[k].s}"></i>${ST[k].t}: ${counts[k]}</div>`).join('');
+    const multi = a.mats.length>1;
+    const acts = a.mats.filter(m=>m.s==='done');
+    h+=`<tr class="${chgN?'need':''}">
+      <td>${multi?`<button class="chev" data-i="${i}" onclick="toggleList(this)">▸</button>`:''}${i===1?'<span class="pin" style="margin:0">2</span>':''}</td>
+      <td>${a.no}${chgN?`<span class="need-hint">${chgN} material düzəliş gözləyir${i===1?' <span class="pin">3</span>':''}</span>`:''}</td>
+      <td>${a.d}</td><td>Fumiqasiya aktı</td><td>Kənd Təsərrüfatı Nazirliyi</td>
+      <td><div class="mat-cell"><span class="mat-count">${a.mats.length}</span><div class="bar">${a.mats.map(m=>`<i class="${ST[m.s].s}"></i>`).join('')}</div><div class="tip">${tip}</div></div></td>
+      <td>${badge(a.st)}</td>
+      <td><div class="pdfwrap"><button class="icon-btn">PDF</button>${i===1?'<span class="pin">4</span>':''}
+        <div class="pdfmenu"><div class="grp">Müraciət</div><div>📄 Elektron müraciət ərizəsi</div>
+        <div class="grp">Material aktları</div>${acts.length?acts.map(m=>`<div>📄 Akt – ${m.name}<span style="color:#2c5bd6">Yüklə</span></div>`).join(''):'<div style="color:#9aa0a8">Hələ akt yoxdur</div>'}</div></div></td>
+      <td><span class="kebab">⋮</span>${i===1?'<span class="pin" style="margin:0">6</span>':''}</td></tr>`;
+    if(multi){
+      h+=`<tr class="subrow" id="sub${i}" style="display:none"><td colspan="9"><table class="subtable"><thead><tr><th class="l">Materialın adı</th><th>Status</th><th class="l">Qurumun qeydi</th><th>Akt</th></tr></thead><tbody>
+      ${a.mats.map(m=>`<tr><td class="l">${m.name}</td><td>${badge(m.s)}</td><td class="l reason-mini"><span class="trunc">${m.r||'—'}</span></td><td>${m.s==='done'?'<span style="color:#2c5bd6">📄 Yüklə</span>':'—'}</td></tr>`).join('')}
+      </tbody></table></td></tr>`;
+    }
+  });
+  tb.innerHTML=h;
+}
+document.getElementById('tabs').addEventListener('click',e=>{
+  const t=e.target.closest('span[data-f]'); if(!t) return;
+  document.querySelectorAll('#tabs span[data-f]').forEach(x=>x.classList.toggle('on',x===t));
+  FILTER=t.dataset.f; renderList();
+});
+function toggleList(b){const r=document.getElementById('sub'+b.dataset.i);const o=r.style.display==='none';r.style.display=o?'':'none';b.classList.toggle('open',o);}
+
+/* ---------- detail data ---------- */
+const MATS = [
+  {cls:'dənli və paxlalı bitkilərin məhsul-ları, yemlər',name:'buğda',unit:'Ton',qty:999,pack:'Çanta',src:'Mingəçevir',s:'done',acts:['Fumiqasiya aktı – buğda.pdf'],at:'19.10.2026 14:20'},
+  {cls:'dənli və paxlalı bitkilərin məhsul-ları, yemlər',name:'arpa',unit:'Ton',qty:120,pack:'Kisə',src:'Gəncə',s:'rej',r:'Mənşə sertifikatı təqdim edilməyib. Material üzrə fumiqasiya tədbiri aparıla bilməz.',at:'18.10.2026 11:05'},
+  {cls:'texniki yüklər və digər materiallar (tütün, pambıq, biyan və digər karantin nəzarətində olan materiallar)',name:'mahlıc',unit:'Ton',qty:20,pack:'Konteyner',src:'Gəncə',s:'chg',r:'Miqdar faktura ilə uyğun deyil. Fakturada 25 ton göstərilib, zəhmət olmasa miqdarı düzəldin.',at:'18.10.2026 16:40'},
+  {cls:'Taxta altlıqların və qutuların zərərsizləşdirilməsi və markalanması (m3)',name:'taxta palet',unit:'m³',qty:45,pack:'Konteyner',src:'Bakı',s:'prog'}
+];
+MATS.forEach(m=>m.fee=+(m.qty*RATE[m.cls]).toFixed(2));
+const open = new Set([2]);
+const HIST = [
+  {t:'16.10.2026 09:47',x:'Müraciət göndərildi. Bütün materiallar: Yeni'},
+  {t:'17.10.2026 10:12',x:'Müraciət icraya götürüldü – İcradadır'},
+  {t:'18.10.2026 11:05',x:'<b>arpa</b> – İmtina edildi. Səbəb: Mənşə sertifikatı təqdim edilməyib…'},
+  {t:'18.10.2026 16:40',x:'<b>mahlıc</b> – Dəyişiklik gözlənilir. Səbəb: Miqdar faktura ilə uyğun deyil…'},
+  {t:'19.10.2026 14:20',x:'<b>buğda</b> – İcra tamamlandı. Akt əlavə edildi'}
+];
+
+function renderDetail(){
+  const tb=document.getElementById('matBody'); let h='';
+  MATS.forEach((m,i)=>{
+    const isOpen=open.has(i); const cls=m.s==='chg'?'r-chg':m.s==='rej'?'r-rej':'';
+    const hasDetail = m.r||m.acts;
+    h+=`<tr class="${cls}">
+      <td>${hasDetail?`<button class="chev ${isOpen?'open':''}" onclick="toggleMat(${i})">▸</button>`:''}</td>
+      <td class="l"><span class="trunc" style="max-width:220px" title="${m.cls}">${m.cls}</span></td>
+      <td>${m.name}</td><td>${m.unit}</td><td>${m.qty}</td><td>${m.fee.toFixed(2)}</td><td>${m.pack}</td><td>${m.src}</td>
+      <td>${badge(m.s)}</td>
+      <td>${m.s==='done'?'<button class="icon-btn" title="Aktı yüklə">PDF</button>':'<span style="color:#c4c8ce">—</span>'}</td>
+      <td>${m.s==='chg'?`<button class="icon-btn plain" title="Düzəliş et" onclick="openEdit(${i})" style="color:var(--chg-tx);font-size:16px">✎</button>`:''}</td></tr>`;
+    if(hasDetail && isOpen){
+      let inner='';
+      if(m.s==='chg') inner=`<div class="reason chg"><div class="rh">Düzəliş səbəbi <span>${m.at} · Kənd Təsərrüfatı Nazirliyi</span></div>${m.r}<div style="margin-top:8px"><button class="btn primary sm" onclick="openEdit(${i})">✎ Düzəliş et</button></div></div>`;
+      if(m.s==='rej') inner=`<div class="reason rej"><div class="rh">İmtina səbəbi <span>${m.at} · Kənd Təsərrüfatı Nazirliyi</span></div>${m.r}</div>`;
+      if(m.s==='done') inner=`<div style="font-size:12.5px;color:var(--muted)">İcra tamamlandı · ${m.at}</div><div class="acts">${m.acts.map(a=>`<span class="act">📄 ${a} · Bax · Yüklə</span>`).join('')}</div>`;
+      if(m.s==='prog' && m.r) inner=`<div style="font-size:12.5px;color:var(--muted)">Düzəliş göndərildi · ${m.at}. Qurumun baxışı gözlənilir.</div>`;
+      h+=`<tr class="detail"><td colspan="11">${inner}</td></tr>`;
+    }
+  });
+  tb.innerHTML=h;
+  document.getElementById('total').textContent=MATS.reduce((s,m)=>s+m.fee,0).toFixed(2);
+  const c={};MATS.forEach(m=>c[m.s]=(c[m.s]||0)+1);
+  const lbl={done:'tamamlandı',rej:'imtina',chg:'dəyişiklik',prog:'icradadır',new:'yeni'};
+  document.getElementById('summary').innerHTML=Object.keys(lbl).filter(k=>c[k]).map(k=>`<span class="badge ${ST[k].b}">${c[k]} ${lbl[k]}</span>`).join('');
+  const chg=MATS.map((m,i)=>[m,i]).filter(([m])=>m.s==='chg');
+  document.getElementById('chgBanner').style.display=chg.length?'flex':'none';
+  document.getElementById('chgList').innerHTML=chg.map(([m,i])=>`<li><a onclick="goMat(${i})">${m.name}</a> – ${m.r.split('.')[0]}</li>`).join('');
+  const st=document.getElementById('appStatus');
+  const allFinal=MATS.every(m=>m.s==='done'||m.s==='rej');
+  const k=chg.length?'chg':allFinal?'done':'prog';
+  st.className='badge '+ST[k].b; st.textContent=ST[k].t;
+  document.getElementById('timeline').innerHTML=HIST.map(x=>`<div><span class="t">${x.t}</span><br>${x.x}</div>`).join('');
+}
+function toggleMat(i){open.has(i)?open.delete(i):open.add(i);renderDetail();}
+function goMat(i){open.add(i);renderDetail();document.getElementById('matBody').scrollIntoView({behavior:'smooth',block:'center'});}
+
+/* ---------- edit modal ---------- */
+let editI=null;
+function openEdit(i){
+  editI=i; const m=MATS[i];
+  if(m.s!=='chg'){toast('Bu material artıq düzəliş gözləmir (nümunədə göndərilib).');return;}
+  mName.textContent=m.name; mDate.textContent=m.at; mReason.textContent=m.r;
+  mCls.textContent=m.cls; mMat.textContent=m.name; mUnit.textContent=m.unit; mQty.textContent=m.qty;
+  mFee.textContent=m.fee.toFixed(2); mPack.textContent=m.pack; mSrc.textContent=m.src;
+  overlay.classList.add('show');
+}
+document.getElementById('mQty').addEventListener('input',()=>{
+  const q=parseFloat(mQty.textContent.replace(',','.'))||0; mFee.textContent=(q*RATE[MATS[editI].cls]).toFixed(2);
+});
+function closeEdit(){overlay.classList.remove('show');}
+function submitEdit(){
+  const m=MATS[editI]; const q=parseFloat(mQty.textContent.replace(',','.'));
+  if(!(q>0)){toast('Miqdar 0-dan böyük olmalıdır');return;}
+  m.qty=q; m.fee=+(q*RATE[m.cls]).toFixed(2); m.s='prog'; m.at='21.10.2026 '+new Date().toTimeString().slice(0,5);
+  HIST.push({t:m.at,x:`<b>${m.name}</b> – sahibkar düzəlişi göndərdi – İcradadır`});
+  closeEdit(); renderDetail(); toast('Düzəliş göndərildi. Material statusu: İcradadır');
+}
+overlay.addEventListener('click',e=>{if(e.target===overlay)closeEdit();});
+function toast(t){const el=document.getElementById('toast');el.textContent=t;el.style.display='block';clearTimeout(el._t);el._t=setTimeout(()=>el.style.display='none',2600);}
+
+renderList(); renderDetail();
+</script>
+</body>
+</html>
